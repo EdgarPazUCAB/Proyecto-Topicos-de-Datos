@@ -1,0 +1,13 @@
+dataset,problema,decisión,justificación
+clientes,"genero = ""No especificado"" (433)",Conservar como categoría propia; no imputar,No es inferible desde otras variables; imputar introduciría un sesgo.
+clientes,fecha_registro posterior a la primera compra (5.803 clientes),"Conservar; crear fecha_alta_efectiva = mín(registro, primer evento) y antiguedad_dias",Eliminar invalidaría el 50% de las ventas; la actividad transaccional es más confiable que un campo de alta.
+clientes,392 clientes sin compras,Conservar; flag_sin_compras,Son relevantes para marketing (reciben campañas) y para el churn.
+transacciones,24.972 compras anteriores a fecha_registro,Conservar; flag_antes_registro,"Mismo motivo: el error está en el atributo del cliente, no en la transacción."
+transacciones,Outliers de monto_neto (IQR),Conservar; flag_outlier_monto,Ventas legítimas de alto valor (Electrónica); el monto cuadra exactamente.
+transacciones,Variables derivadas,"Calcular ingreso_bruto, costo_total, margen_bruto, margen_bruto_pct, descuento_monto, flag_devuelta, monto_devuelto, margen_neto (base: el producto devuelto se recupera salvo defecto o fraude) y margen_neto_pesimista",El margen no viene en las transacciones; es la base del análisis de rentabilidad (A2) y de fugas (A3).
+devoluciones,Variables derivadas,"dias_a_devolucion, categoria, segmento",Facilita el análisis de patrones de devolución (A3).
+interacciones_crm,Felicitaciones con estado de resolución (233),"resolucion = ""no_aplica""",Inconsistencia semántica; evita inflar las quejas no resueltas.
+interacciones_crm,tiempo_respuesta > 168 h (15),Conservar; flag_respuesta_extrema y tiempo_respuesta_wins (winsorizado al p99),Son señal válida de mal servicio; la winsorización protege los promedios.
+campanas_marketing,convertido = 1 sin compra en ≤30 días (618),Conservar el flag oficial; crear flag_conversion_verificada y monto_compra_30d,Permite calcular el ROI con compras reales y probar la robustez.
+campanas_marketing,Doble envío CLI01899 en 2024-06-13,Conservar ambos; flag_envio_duplicado,Descuento y resultado distintos: no es un duplicado técnico.
+todos,Tipos de datos,Fechas como datetime; flags 0/1 como int; IDs como string,Garantiza joins y operaciones temporales correctas.
