@@ -2,7 +2,7 @@
 
 Análisis exploratorio para encontrar oportunidades de rentabilidad y fugas de ingresos de una cadena de retail, a partir de 6 datasets operativos (24 meses: 2023-01-01 a 2024-12-31). El enunciado completo está en `Proyecto_01_Retail_Intelligence.pdf`.
 
-**Estado actual:** A1, A2, A3 y A4 terminadas. Falta A5 (storytelling, dashboard y presentación).
+**Estado actual:** las cinco actividades (A1–A5) están terminadas. La presentación ejecutiva de A5 y el modelo dimensional (esquema estrella) se entregan aparte.
 
 ---
 
@@ -16,12 +16,13 @@ Proyecto-Topicos-de-Datos/
 │   ├── 01_auditoria_calidad.ipynb        ← A1: auditoría de calidad (nulos, duplicados, outliers, inconsistencias), métricas y limpieza
 │   ├── 02_rentabilidad.ipynb             ← A2: margen, CLV, estacionalidad y descuentos
 │   ├── 03_fugas_ingresos.ipynb           ← A3: devoluciones, CRM, churn e impacto a 6 meses
-│   └── 04_marketing.ipynb                ← A4: conversión, efecto del descuento, segmento que no convierte y ROI
+│   ├── 04_marketing.ipynb                ← A4: conversión, efecto del descuento, segmento que no convierte y ROI
+│   └── 05_recomendaciones.ipynb          ← A5: recomendaciones cuantificadas y figuras nuevas de la presentación
 ├── data/clean/                           ← datos limpios (los genera el notebook 01)
 │   ├── dim_cliente.csv  dim_producto.csv  dim_fecha.csv
 │   └── fact_ventas.csv  fact_devoluciones.csv  fact_interacciones.csv  fact_campanas.csv
 └── outputs/
-    ├── figuras/   ← gráficos PNG para el informe y la presentación (prefijo a1_ … a4_)
+    ├── figuras/   ← gráficos PNG para el informe y la presentación (prefijo a1_ … a5_)
     └── tablas/    ← tablas CSV de soporte (mismo prefijo)
 ```
 
@@ -39,7 +40,7 @@ py -m pip install -r requirements.txt
 
 ```bash
 cd notebooks
-py -m nbconvert --to notebook --execute --inplace 01_auditoria_calidad.ipynb 02_rentabilidad.ipynb 03_fugas_ingresos.ipynb 04_marketing.ipynb
+py -m nbconvert --to notebook --execute --inplace 01_auditoria_calidad.ipynb 02_rentabilidad.ipynb 03_fugas_ingresos.ipynb 04_marketing.ipynb 05_recomendaciones.ipynb
 ```
 
 `nbconvert` ejecuta los archivos en el orden en que se escriben. Las carpetas `data/clean/` y `outputs/` se crean solas si no existen.
@@ -48,6 +49,7 @@ py -m nbconvert --to notebook --execute --inplace 01_auditoria_calidad.ipynb 02_
 2. `02_rentabilidad.ipynb` lee `data/clean/` y genera, entre otras cosas, `outputs/tablas/a2_clv_segmento.csv`.
 3. `03_fugas_ingresos.ipynb` lee `data/clean/` y el CLV de A2.
 4. `04_marketing.ipynb` lee `data/clean/` (no depende de A2 ni de A3).
+5. `05_recomendaciones.ipynb` lee `data/clean/` y el escenario de tope de descuento de A4 (`outputs/tablas/a4_escenario_tope_descuento.csv`).
 
 Para abrirlos en el navegador (requiere además `py -m pip install notebook`) o directamente en VS Code:
 
@@ -61,9 +63,9 @@ Para volver a ejecutar uno completo desde la terminal (por ejemplo, después de 
 cd notebooks && py -m nbconvert --to notebook --execute --inplace 01_auditoria_calidad.ipynb
 ```
 
-> Si se cambia el notebook 01, hay que volver a ejecutar el 02, el 03 y el 04, porque usan los datos limpios que genera.
+> Si se cambia el notebook 01, hay que volver a ejecutar del 02 al 05, porque usan los datos limpios que genera. Si se cambia el 04, hay que volver a ejecutar el 05.
 
-Cada notebook sigue la misma lógica: **pregunta del enunciado → código → tabla o gráfico → celda de "Lectura"** con la interpretación y los números clave. El código va **comentado paso a paso** (qué se mide y por qué) y **no imprime resultados por consola**: la evidencia se emite como tabla o figura, y las cifras se leen en el texto de las celdas de "Lectura", de modo que la afirmación y el número quedan siempre juntos. A1 cierra con la bitácora de IA, los supuestos y las limitaciones; A2 y A3, con un resumen ejecutivo.
+Cada notebook sigue la misma lógica: **pregunta del enunciado → código → tabla o gráfico → celda de "Lectura"** con la interpretación y los números clave. El código va **comentado paso a paso** (qué se mide y por qué) y **no imprime resultados por consola**: la evidencia se emite como tabla o figura, y las cifras se leen en el texto de las celdas de "Lectura", de modo que la afirmación y el número quedan siempre juntos. A1 cierra con la bitácora de IA, los supuestos y las limitaciones; A2, A3 y A4, con un resumen ejecutivo; A5, con el consolidado de recomendaciones.
 
 ---
 
@@ -120,14 +122,24 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 | Segmento que no convierte | Perfil por segmento con historia previa de 90 días (quejas, quejas no resueltas, devoluciones, recencia); 4 hipótesis contrastadas con controles y FDR |
 | ROI por tipo | ROI **contable** (sobre ventas y sobre margen, declarado y verificado) e **incremental** (solo conversiones causadas por el descuento, vía el modelo); sensibilidad al margen y escenario de tope de descuento |
 
+### A5 · Recomendaciones y storytelling (`05_recomendaciones.ipynb`)
+
+| Pregunta | Método |
+|---|---|
+| ¿Cuánto vale cada recomendación? | Impacto en margen a **6 meses** (24 meses ÷ 4, justificado por la estabilidad de ventas, devoluciones y descuentos), expresado como % del margen neto semestral (≈ $781K) |
+| R1 · Tope de descuento en ventas | Margen recuperado en ventas **no devueltas** con topes del 10, 15 y 20 %, y **pérdida de volumen de equilibrio** (cuánto volumen podrían perder las ventas afectadas antes de que la medida deje de convenir) |
+| R2 · Devoluciones | Margen perdido por **categoría × motivo** y escenarios de reducción del 15, 30 y 50 % en Electrónica defectuosa y Ropa (defecto y talla) |
+| R3 · Campañas | Escenario de tope de descuento del 10 % de A4 y peso del segmento Inactivo en los envíos |
+| Figuras de la presentación | `a5_sintomas.png`, `a5_devoluciones_motivo.png` y `a5_impacto_recomendaciones.png`; las demás visualizaciones se reutilizan de A2–A4 |
+
 ---
 
-## 4. Hallazgos hasta ahora
+## 4. Hallazgos
 
 **Premisas del caso (verificadas sobre `data/clean/`; se retoman en A4):**
-- La caída de la conversión a la mitad **sí se confirma** (11% → 5,6%; o 30% → 15% sobre campañas abiertas).
+- La caída de la conversión a la mitad **sí se confirma**: 11,2 % → 6,9 % entre 2023 y 2024 (11,3 % → 5,6 % del primer al último trimestre; 31,6 % → 19,0 % sobre campañas abiertas).
 - La caída del ticket del 8% **no se confirma**: baja solo 1,9%.
-- Las devoluciones (~13,5%) son altas pero **estables** desde 2023: no aumentaron recientemente.
+- Las devoluciones (~13,4 %) son altas pero **estables** desde 2023: no aumentaron recientemente.
 
 **Rentabilidad (A2):**
 - **Electrónica** es el 44% de las ventas, pero solo el 16% del margen neto (6,3% de margen, 17,7% de devoluciones).
@@ -149,7 +161,13 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 - **Inactivo** recibe el 14 % de los envíos y no convierte, pero **no por quejas ni devoluciones** (hipótesis rechazadas): es baja intención (61 % sin compras previas).
 - **ROI:** ~4,9x sobre ventas y ~1x sobre margen (contable), pero **−0,16x incremental**: el 53 % de los convertidos habría comprado sin descuento. El descuento solo crea margen hasta el **10 %**; un tope del 10 % da +34 % de margen de campañas (≈ +$2,8K cada 6 meses).
 
-**Hilo del relato para A5:** la gerencia cree que el problema es la pérdida de clientes, pero los clientes son leales. El margen se pierde por **qué** se vende (Electrónica y Ropa, con muchas devoluciones), por **cómo** se vende (descuentos sin retorno, sobre todo online) y por clientes nuevos que **no llegan a una segunda compra**.
+**Recomendaciones (A5), horizonte de 6 meses:**
+- **R1 · Tope de descuento del 10 % en ventas:** +$47,6K de margen (**+6,1 % del margen neto**). Afecta al 19 % de las ventas y sigue conviniendo aunque esas ventas perdieran hasta un 33 % de su volumen.
+- **R2 · Calidad con proveedores de Electrónica y guía de tallas en Ropa:** *Electrónica × producto defectuoso* es el **33 % de todo el margen perdido por devoluciones** ($392K en 24 meses), porque el producto no vuelve al inventario. Reducir un 30 % esas devoluciones y las de defecto/talla en Ropa recupera +$37,6K (**+4,8 %**); con 15 % serían $18,8K y con 50 %, $62,7K.
+- **R3 · Campañas con tope del 10 % y sin envíos masivos a Inactivos:** **+34 % de margen de campañas** (+$2,8K) y ≈ $5,4K menos de descuento cedido.
+- **Total: ≈ +$88K de margen por semestre (+11 % del margen neto).** Los montos no se solapan: R1 actúa sobre ventas no devueltas, R2 sobre ventas devueltas y R3 sobre campañas.
+
+**Hilo del relato (A5):** la gerencia cree que el problema es la pérdida de clientes, pero los clientes son leales. El margen se pierde por **qué** se vende (Electrónica y Ropa, con muchas devoluciones), por **cómo** se vende (descuentos sin retorno, sobre todo online) y por clientes nuevos que **no llegan a una segunda compra**.
 
 ---
 
@@ -163,7 +181,9 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 - **Churn:** el ritmo de compra se mide desde 2023-01-01, que es la opción conservadora, y la fuga estructural se calcula por segmento para no confundir regresión a la media con fuga.
 - **Proyección a 6 meses:** supone que nada cambia, lo que se justifica porque ventas, devoluciones y descuentos son estables. Los componentes pueden solaparse, así que el total es una cota superior.
 
-## 6. Próximos pasos
+## 6. Entregables
 
-- **A5 · Storytelling:** relato con inicio, nudo y desenlace; dashboard o presentación con máximo 10 visualizaciones y títulos tipo insight; 3 o más recomendaciones cuantificadas ("Si hacemos X → Y% en Z = $ monto"); presentación de 15 minutos.
-- **Entregables:** informe técnico (PDF), dashboard o storytelling ejecutivo, y presentación para la defensa (PowerPoint).
+- **Repositorio:** notebooks 01–05 ejecutados, datos limpios (`data/clean/`), tablas y figuras (`outputs/`).
+- **Presentación ejecutiva (A5):** 14 diapositivas en PowerPoint con relato inicio–nudo–desenlace, 9 visualizaciones con títulos de insight, 3 recomendaciones cuantificadas y notas del orador. Se entrega aparte.
+- **Modelo dimensional (A1):** esquema estrella, entregado aparte.
+- **Bitácora de IA:** registro de consultas con lo aceptado, ajustado o rechazado y su validación técnica.
