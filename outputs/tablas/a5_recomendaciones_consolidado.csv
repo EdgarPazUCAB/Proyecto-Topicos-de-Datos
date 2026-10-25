@@ -1,0 +1,4 @@
+recomendación,métrica,margen_6m,supuesto_clave,dificultad,%_margen_neto_6m
+R1 · Tope de descuento 10 % en ventas,Margen neto,47619.121134999994,El volumen no cae (A2: efecto del descuento no significativo),Baja (política comercial),6.098701185124251
+R2 · Calidad en Electrónica y tallas en Ropa (−30 % devoluciones objetivo),Margen neto,37649.32275,Escenario: la reducción del 30 % no viene de un dato externo,Media (proveedores y contenido web),4.821843910634166
+R3 · Campañas: tope 10 % y excluir Inactivos,Margen de campañas,2834.3837115559872,Modelo de A4: el descuento es asignado como al azar,Baja (segmentación de envíos),0.36300668489360555
