@@ -1,0 +1,7 @@
+﻿relación,huérfanos,total
+transacciones.cliente_id → clientes,0,50000
+transacciones.producto_id → productos,0,50000
+devoluciones.transaccion_id → transacciones,0,6724
+devoluciones.cliente_id → clientes,0,6724
+interacciones_crm.cliente_id → clientes,0,4684
+campanas_marketing.cliente_id → clientes,0,8820

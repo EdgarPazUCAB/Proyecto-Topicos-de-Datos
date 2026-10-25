@@ -1,0 +1,7 @@
+﻿dataset,completitud_% antes,completitud_% después,unicidad_% antes,unicidad_% después,consistencia_% antes,consistencia_% después,consistencia_sin_fecha_alta_% antes,consistencia_sin_fecha_alta_% después,cobertura_% antes,cobertura_% después
+clientes,99.23,99.23,100.0,100.0,27.46,100.0,100.0,100.0,100.0,100.0
+transacciones,100.0,100.0,100.0,100.0,50.06,100.0,100.0,100.0,100.0,100.0
+productos,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,,
+devoluciones,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0
+interacciones_crm,100.0,100.0,100.0,100.0,45.64,100.0,95.03,100.0,100.0,100.0
+campanas_marketing,100.0,100.0,99.99,99.99,46.21,91.11,91.11,91.11,100.0,100.0

@@ -1,0 +1,7 @@
+﻿dataset,registros,pk_duplicada,filas_identicas,dup_logicos,clave_logica
+clientes,8000,0,0,0,—
+transacciones,50000,0,0,0,"cliente_id, fecha, producto_id, cantidad, monto_neto, canal"
+productos,318,0,0,0,nombre
+devoluciones,6724,0,0,0,transaccion_id
+interacciones_crm,4684,0,0,0,"cliente_id, tipo, fecha, canal"
+campanas_marketing,8820,0,0,1,"cliente_id, tipo_campana, fecha_envio"

@@ -1,0 +1,35 @@
+﻿dataset,categoria,regla,aplicables,incumplen,%_cumple
+clientes,decisión de negocio,R01 edad entre 18 y 100,8000,0,100.0
+clientes,estructural/aritmética,R02 fecha de alta dentro del período,8000,0,100.0
+clientes,temporal (fecha_registro),R03 fecha de alta ≤ primera compra,8000,5803,27.46
+clientes,estructural/aritmética,R26 categóricas dentro de su dominio,8000,0,100.0
+transacciones,estructural/aritmética,R04 precio_unitario = precio_lista del catálogo,50000,0,100.0
+transacciones,estructural/aritmética,R05 monto_neto = cant × precio × (1 − desc),50000,0,100.0
+transacciones,estructural/aritmética,"R06 cantidad > 0 y descuento en [0, 1)",50000,0,100.0
+transacciones,temporal (fecha_registro),R07 fecha de compra ≥ fecha de alta del cliente,50000,24972,50.06
+transacciones,decisión de negocio,"R24 sin casi-duplicados (cliente, fecha, producto)",50000,0,100.0
+transacciones,estructural/aritmética,R25 fecha dentro de la ventana de análisis,50000,0,100.0
+transacciones,estructural/aritmética,R26 categóricas dentro de su dominio,50000,0,100.0
+productos,estructural/aritmética,R08 costo < precio_lista,318,0,100.0
+productos,estructural/aritmética,R09 margen_bruto_pct = (precio − costo)/precio (±0.1 pp),318,0,100.0
+productos,estructural/aritmética,R26 categóricas dentro de su dominio,318,0,100.0
+devoluciones,estructural/aritmética,R10 cliente coincide con el de la transacción,6724,0,100.0
+devoluciones,estructural/aritmética,R11 fecha_devolucion ≥ fecha de compra,6724,0,100.0
+devoluciones,estructural/aritmética,R12 monto_devuelto ≤ monto_neto,6724,0,100.0
+devoluciones,decisión de negocio,"R13 motivo ""Talla_incorrecta"" solo en Ropa_y_Calzado",6724,0,100.0
+devoluciones,decisión de negocio,R22 devolución por el monto completo de la línea,6724,0,100.0
+devoluciones,decisión de negocio,R23 días a devolución entre 0 y 30,6724,0,100.0
+devoluciones,estructural/aritmética,R25 fecha dentro de la ventana de análisis,6724,0,100.0
+devoluciones,estructural/aritmética,R26 categóricas dentro de su dominio,6724,0,100.0
+interacciones_crm,estructural/aritmética,R14 tiempo_respuesta_hrs > 0,4684,0,100.0
+interacciones_crm,decisión de negocio,R15 felicitación sin estado de resolución,4684,233,95.03
+interacciones_crm,temporal (fecha_registro),R16 fecha ≥ fecha de alta del cliente,4684,2428,48.16
+interacciones_crm,estructural/aritmética,R25 fecha dentro de la ventana de análisis,4684,0,100.0
+interacciones_crm,estructural/aritmética,R26 categóricas dentro de su dominio,4684,0,100.0
+campanas_marketing,decisión de negocio,R17 canal coherente con tipo de campaña,8820,0,100.0
+campanas_marketing,estructural/aritmética,R18 convertido ⇒ abierto,8820,0,100.0
+campanas_marketing,decisión de negocio,R19 convertido ⇒ compra en ≤30 días tras el envío,8820,618,92.99
+campanas_marketing,temporal (fecha_registro),R20 fecha_envio ≥ fecha de alta del cliente,8820,4421,49.88
+campanas_marketing,decisión de negocio,R21 descuento ofrecido = descuento aplicado (conversión verificable),179,166,7.26
+campanas_marketing,estructural/aritmética,R25 fecha dentro de la ventana de análisis,8820,0,100.0
+campanas_marketing,estructural/aritmética,R26 categóricas dentro de su dominio,8820,0,100.0
