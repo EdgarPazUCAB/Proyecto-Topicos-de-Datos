@@ -2,41 +2,52 @@
 
 Análisis exploratorio para encontrar oportunidades de rentabilidad y fugas de ingresos de una cadena de retail, a partir de 6 datasets operativos (24 meses: 2023-01-01 a 2024-12-31). El enunciado completo está en `Proyecto_01_Retail_Intelligence.pdf`.
 
-**Estado actual:** A1, A2 y A3 terminadas. Faltan A4 (marketing) y A5 (storytelling, dashboard y presentación).
+**Estado actual:** A1, A2, A3 y A4 terminadas. Falta A5 (storytelling, dashboard y presentación).
 
 ---
 
 ## 1. Estructura de la carpeta
 
 ```
-Proyecto 01 Analitica de Retail/
+Proyecto-Topicos-de-Datos/
 ├── Proyecto_01_Retail_Intelligence.pdf   ← enunciado
 ├── *.csv                                 ← 6 datasets ORIGINALES (no se modifican)
 ├── notebooks/
 │   ├── 01_auditoria_calidad.ipynb        ← A1: auditoría de calidad (nulos, duplicados, outliers, inconsistencias), métricas y limpieza
 │   ├── 02_rentabilidad.ipynb             ← A2: margen, CLV, estacionalidad y descuentos
-│   └── 03_fugas_ingresos.ipynb           ← A3: devoluciones, CRM, churn e impacto a 6 meses
+│   ├── 03_fugas_ingresos.ipynb           ← A3: devoluciones, CRM, churn e impacto a 6 meses
+│   └── 04_marketing.ipynb                ← A4: conversión, efecto del descuento, segmento que no convierte y ROI
 ├── data/clean/                           ← datos limpios (los genera el notebook 01)
 │   ├── dim_cliente.csv  dim_producto.csv  dim_fecha.csv
 │   └── fact_ventas.csv  fact_devoluciones.csv  fact_interacciones.csv  fact_campanas.csv
 └── outputs/
-    ├── figuras/   ← gráficos PNG para el informe y la presentación (prefijo a1_, a2_, a3_)
+    ├── figuras/   ← gráficos PNG para el informe y la presentación (prefijo a1_ … a4_)
     └── tablas/    ← tablas CSV de soporte (mismo prefijo)
 ```
 
 ## 2. Cómo ejecutarlo
 
-**Requisitos:** Python 3.12 o superior. Versiones con las que se validaron los tres notebooks (Python 3.13.5): pandas 2.3.3, numpy 2.3.3, matplotlib 3.10.8, seaborn 0.13.2, scipy 1.18.1, statsmodels 0.15.0, scikit-learn 1.9.1. Están fijadas en `requirements.txt`.
+**Requisitos:** Python 3.12 o superior. Versiones con las que se validaron los notebooks (Python 3.13.5 y 3.14): pandas 2.3.3, numpy 2.3.3, matplotlib 3.10.8, seaborn 0.13.2, scipy 1.18.1, statsmodels 0.15.0, scikit-learn 1.9.1. Están fijadas en `requirements.txt`.
 
 ```bash
 py -m pip install -r requirements.txt
 ```
 
-**Orden de ejecución (importante):** los notebooks dependen uno del otro.
+> En macOS/Linux se usa `python3` en lugar de `py` en todos los comandos. Opcionalmente, para no tocar el Python del sistema, se puede crear antes un entorno virtual: `py -m venv .venv` y activarlo (`.venv\Scripts\activate` en Windows, `source .venv/bin/activate` en macOS/Linux).
+
+**Orden de ejecución (importante):** los notebooks dependen uno del otro. Para regenerar todo desde los CSV originales, en orden (desde la carpeta del proyecto):
+
+```bash
+cd notebooks
+py -m nbconvert --to notebook --execute --inplace 01_auditoria_calidad.ipynb 02_rentabilidad.ipynb 03_fugas_ingresos.ipynb 04_marketing.ipynb
+```
+
+`nbconvert` ejecuta los archivos en el orden en que se escriben. Las carpetas `data/clean/` y `outputs/` se crean solas si no existen.
 
 1. `01_auditoria_calidad.ipynb` lee los CSV originales y **genera `data/clean/`**.
 2. `02_rentabilidad.ipynb` lee `data/clean/` y genera, entre otras cosas, `outputs/tablas/a2_clv_segmento.csv`.
 3. `03_fugas_ingresos.ipynb` lee `data/clean/` y el CLV de A2.
+4. `04_marketing.ipynb` lee `data/clean/` (no depende de A2 ni de A3).
 
 Para abrirlos en el navegador (requiere además `py -m pip install notebook`) o directamente en VS Code:
 
@@ -50,7 +61,7 @@ Para volver a ejecutar uno completo desde la terminal (por ejemplo, después de 
 cd notebooks && py -m nbconvert --to notebook --execute --inplace 01_auditoria_calidad.ipynb
 ```
 
-> Si se cambia el notebook 01, hay que volver a ejecutar el 02 y el 03, porque usan los datos limpios que genera.
+> Si se cambia el notebook 01, hay que volver a ejecutar el 02, el 03 y el 04, porque usan los datos limpios que genera.
 
 Cada notebook sigue la misma lógica: **pregunta del enunciado → código → tabla o gráfico → celda de "Lectura"** con la interpretación y los números clave. El código va **comentado paso a paso** (qué se mide y por qué) y **no imprime resultados por consola**: la evidencia se emite como tabla o figura, y las cifras se leen en el texto de las celdas de "Lectura", de modo que la afirmación y el número quedan siempre juntos. A1 cierra con la bitácora de IA, los supuestos y las limitaciones; A2 y A3, con un resumen ejecutivo.
 
@@ -100,6 +111,15 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 | Churn | Backtest de 4 métricas candidatas; se adopta **PI6** (probabilidad de no comprar en 6 meses), validada fuera de tiempo |
 | Impacto a 6 meses | Proyección de margen perdido por fuga, separando la parte **evitable** identificada |
 
+### A4 · Marketing (`04_marketing.ipynb`)
+
+| Pregunta | Método |
+|---|---|
+| Conversión por tipo, canal y segmento | Tasas con IC de Wilson, χ², celdas tipo × segmento contra la tasa de su segmento (binomial + FDR) y prueba de interacción; descomposición del embudo (apertura → conversión) y tendencia con y sin controles de mezcla |
+| Efecto del descuento | Prueba de **balance** de la asignación (experimento natural), logit con efectos fijos de segmento (+ tipo y tiempo), efecto marginal, interacción descuento × segmento, mecanismo (apertura vs. compra) y robustez con conversión **verificada** |
+| Segmento que no convierte | Perfil por segmento con historia previa de 90 días (quejas, quejas no resueltas, devoluciones, recencia); 4 hipótesis contrastadas con controles y FDR |
+| ROI por tipo | ROI **contable** (sobre ventas y sobre margen, declarado y verificado) e **incremental** (solo conversiones causadas por el descuento, vía el modelo); sensibilidad al margen y escenario de tope de descuento |
+
 ---
 
 ## 4. Hallazgos hasta ahora
@@ -122,6 +142,13 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 - **Los clientes de alto valor no se están yendo.** La recencia no predice la fuga, porque los clientes compran a un ritmo constante y aleatorio. La fuga real ($36K en 6 meses) está en clientes de 1–2 compras: el 61% de los Nuevos nunca repite.
 - **En 6 meses se perderían ~$554K de margen** (71% del margen neto proyectado). El **98%** se debe a **devoluciones ($300K) y descuentos ($243K)**, y ya hay **$153K evitables** identificados.
 
+**Marketing (A4):**
+- La conversión cae a la mitad (11,2 % → 6,9 %) **sin** que caiga la apertura ni cambie la mezcla: es un escalón en la conversión de quien abre en 2024. Las ventas no caen, porque `convertido` casi no refleja compras (solo el 22,5 % se verifica).
+- **Tipo y canal no importan** (p = 0,58 y 0,75); lo decide el **segmento** (Premium 13,7 % vs. Inactivo 5,5 %). No hay combinación tipo × segmento ganadora.
+- El descuento se asignó **como al azar**, así que su efecto es causal: **+1,3 pp de conversión por cada +5 pp**, igual en todos los segmentos y con techo en el 15–20 %.
+- **Inactivo** recibe el 14 % de los envíos y no convierte, pero **no por quejas ni devoluciones** (hipótesis rechazadas): es baja intención (61 % sin compras previas).
+- **ROI:** ~4,9x sobre ventas y ~1x sobre margen (contable), pero **−0,16x incremental**: el 53 % de los convertidos habría comprado sin descuento. El descuento solo crea margen hasta el **10 %**; un tope del 10 % da +34 % de margen de campañas (≈ +$2,8K cada 6 meses).
+
 **Hilo del relato para A5:** la gerencia cree que el problema es la pérdida de clientes, pero los clientes son leales. El margen se pierde por **qué** se vende (Electrónica y Ropa, con muchas devoluciones), por **cómo** se vende (descuentos sin retorno, sobre todo online) y por clientes nuevos que **no llegan a una segunda compra**.
 
 ---
@@ -138,6 +165,5 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 
 ## 6. Próximos pasos
 
-- **A4 · Marketing:** conversión por tipo de campaña, canal y segmento; efecto del descuento controlando por segmento; segmento que recibe campañas y no convierte; ROI por tipo de campaña.
 - **A5 · Storytelling:** relato con inicio, nudo y desenlace; dashboard o presentación con máximo 10 visualizaciones y títulos tipo insight; 3 o más recomendaciones cuantificadas ("Si hacemos X → Y% en Z = $ monto"); presentación de 15 minutos.
 - **Entregables:** informe técnico (PDF), dashboard o storytelling ejecutivo, y presentación para la defensa (PowerPoint).

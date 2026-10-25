@@ -1,0 +1,5 @@
+,odds_ratio_por_año,p_valor
+Conversión (sin controles),0.6250832948377323,7.837938815682412e-13
+Conversión (controlando mezcla),0.634254899894735,5.297258489441861e-12
+Apertura (controlando mezcla),0.9817941740084355,0.6335293444513997
+Conversión | abrió (controlando mezcla),0.589027601755042,6.971014830756185e-13
