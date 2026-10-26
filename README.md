@@ -76,10 +76,10 @@ Cada notebook sigue la misma lógica: **pregunta del enunciado → código → t
 | Paso | Qué se hace |
 |---|---|
 | Parámetros | Umbrales, SLA y tolerancias centralizados en una sola celda; los CSV originales se leen y **nunca se modifican** |
-| §1 Perfilado | Volumen, tipos, nulos explícitos y "disfrazados" (`No especificado`), cardinalidad y **dominios** de las 14 categóricas (0 valores fuera de dominio) |
+| §1 Perfilado | Volumen, tipos, nulos explícitos y "disfrazados" (`No especificado`), cardinalidad y **vocabulario** de las 14 categóricas (sin validación de dominios: el enunciado no enumera las categorías) |
 | §2 Duplicados | Clave primaria, filas idénticas y duplicados lógicos: 0 PK repetidas, 0 filas idénticas y **1 duplicado lógico** (doble envío de campaña) |
 | §3 Outliers | Solo en las 7 variables **continuas** (IQR y z-score, un boxplot múltiple); en las acotadas se valida el rango y en conteo/ordinales no aplica. Los 4.138 outliers de monto **cuadran** con precio × cantidad × (1 − descuento) y pesan mucho más en el ingreso que en el número de ventas: se conservan y se marcan |
-| §4 Inconsistencias | Integridad referencial (6 FK, 0 huérfanos) y **26 verificaciones de consistencia (R01–R26)**: devoluciones sin transacción, compras anteriores al alta, conversión sin compra, descuento ofrecido vs. aplicado, plazos y dominios. El notebook las clasifica por origen (13 estructurales, 4 temporales, 9 con decisión de negocio) porque el enunciado solo da dos ejemplos, no un catálogo de reglas |
+| §4 Inconsistencias | Integridad referencial (6 FK, 0 huérfanos) y **25 verificaciones de consistencia (R01–R25)**: devoluciones sin transacción, compras anteriores al alta, conversión sin compra, descuento ofrecido vs. aplicado, plazos y ventana de análisis. El notebook las clasifica por origen (12 estructurales, 4 temporales, 9 con decisión de negocio) porque el enunciado solo da dos ejemplos, no un catálogo de reglas |
 | §5 Métricas de calidad | **Completitud, unicidad, consistencia y oportunidad** (cobertura, latencia y frescura) por dataset, en una sola tabla sobre el dato crudo |
 | §6 Limpieza | Tabla de 12 decisiones con su justificación y la verificación que la respalda; no se borra ningún registro (los casos dudosos se marcan con `flag_*`) y se mide el **antes/después** con las mismas verificaciones |
 | §7 Exportación | 7 tablas en `data/clean/` y `assert` de volumen, claves, integridad referencial y reconciliación de montos, releídos desde disco |

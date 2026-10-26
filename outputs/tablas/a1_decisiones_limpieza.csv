@@ -1,5 +1,5 @@
 ﻿dataset,problema,decisión,justificación,verificación
-clientes,"genero = ""No especificado"" (433; 5.4%)",Conservar como categoría propia; no imputar,No es inferible desde otras variables; imputar introduciría un sesgo.,La categoría existe en dim_cliente y R26 la admite.
+clientes,"genero = ""No especificado"" (433; 5.4%)",Conservar como categoría propia; no imputar,No es inferible desde otras variables; imputar introduciría un sesgo.,Se conserva como nivel propio en dim_cliente y A2 lo trata como una categoría más.
 clientes,"fecha_registro posterior a la primera compra (5,803 clientes)","Conservar; crear fecha_alta_efectiva = mín(registro, primer evento) y antiguedad_dias",Eliminar invalidaría ~la mitad de las ventas; la actividad transaccional es más confiable que un campo de alta formal.,assert fecha_alta_efectiva ≤ fecha_registro; con el alta efectiva R03/R07/R16/R20 dejan de incumplirse (§6.1).
 clientes,392 clientes sin compras,Conservar; flag_sin_compras,Son relevantes para marketing (reciben campañas) y para el análisis de churn.,len(dim_cliente) = len(clientes).
 transacciones,"24,972 compras anteriores a fecha_registro",Conservar; flag_antes_registro,"El error está en el atributo del cliente, no en la transacción.",dim_producto/fact_ventas conservan todas las filas (§7).
